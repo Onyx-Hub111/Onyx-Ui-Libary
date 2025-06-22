@@ -56,14 +56,14 @@ function SmoothUILib:CreateWindow(title)
 
     local TabLayout = Instance.new("UIListLayout", TabHolder)
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    TabLayout.Padding = UDim.new(0, 6)
+    TabLayout.Padding = UDim.new(0, 10)
 
     local Tabs = {}
     local CurrentConfig = {}
 
     function SmoothUILib:CreateTab(name)
         local Btn = Instance.new("TextButton", TabHolder)
-        Btn.Size = UDim2.new(1, -10, 0, 30)
+        Btn.Size = UDim2.new(1, -10, 0, 32)
         Btn.Position = UDim2.new(0, 5, 0, 0)
         Btn.Text = name
         Btn.Font = Settings.Font
@@ -71,6 +71,7 @@ function SmoothUILib:CreateWindow(title)
         Btn.TextColor3 = Color3.new(1, 1, 1)
         Btn.BackgroundColor3 = Settings.AccentColor
         Btn.BorderSizePixel = 0
+        Btn.TextWrapped = true
         Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
 
         local Content = Instance.new("ScrollingFrame", Main)
@@ -113,25 +114,9 @@ function SmoothUILib:CreateWindow(title)
             Hold.Size = UDim2.new(1, -10, 0, 30)
             Hold.BackgroundTransparency = 1
 
-            local Box = Instance.new("TextButton", Hold)
-            Box.Size = UDim2.new(0, 30, 1, 0)
-            Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Box.Text = ""
-            Box.AutoButtonColor = false
-            Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 4)
-
-            local Tick = Instance.new("TextLabel", Box)
-            Tick.Size = UDim2.new(1, 0, 1, 0)
-            Tick.Text = "✅"
-            Tick.TextColor3 = Color3.fromRGB(0, 255, 0)
-            Tick.TextScaled = true
-            Tick.BackgroundTransparency = 1
-            Tick.Font = Settings.Font
-            Tick.TextTransparency = default and 0 or 1
-
             local Label = Instance.new("TextLabel", Hold)
             Label.Size = UDim2.new(1, -40, 1, 0)
-            Label.Position = UDim2.new(0, 40, 0, 0)
+            Label.Position = UDim2.new(0, 0, 0, 0)
             Label.Text = txt
             Label.TextColor3 = Color3.new(1, 1, 1)
             Label.BackgroundTransparency = 1
@@ -139,12 +124,28 @@ function SmoothUILib:CreateWindow(title)
             Label.Font = Settings.Font
             Label.TextSize = 14
 
+            local Box = Instance.new("TextButton", Hold)
+            Box.Size = UDim2.new(0, 30, 0, 30)
+            Box.Position = UDim2.new(1, -30, 0, 0)
+            Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            Box.Text = ""
+            Box.AutoButtonColor = false
+            Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 4)
+
+            local Tick = Instance.new("TextLabel", Box)
+            Tick.Size = UDim2.new(1, 0, 1, 0)
+            Tick.Text = "✔"
+            Tick.TextColor3 = Color3.fromRGB(0, 255, 0)
+            Tick.TextScaled = true
+            Tick.BackgroundTransparency = 1
+            Tick.Font = Settings.Font
+            Tick.TextTransparency = default and 0 or 1
+
             local state = default or false
             Box.MouseButton1Click:Connect(function()
                 state = not state
-                local targetTransparency = state and 0 or 1
                 TweenService:Create(Tick, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                    TextTransparency = targetTransparency
+                    TextTransparency = state and 0 or 1
                 }):Play()
                 if callback then callback(state) end
             end)
@@ -160,3 +161,4 @@ function SmoothUILib:CreateWindow(title)
 end
 
 return SmoothUILib
+
