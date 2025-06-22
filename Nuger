@@ -1,0 +1,116 @@
+-- SimpleUILib.lua
+local SimpleUILib = {}
+
+-- Create the base UI
+function SimpleUILib:CreateWindow(title)
+    local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+    ScreenGui.Name = "SimpleUI_" .. tostring(math.random(1, 10000))
+    ScreenGui.ResetOnSpawn = false
+
+    local Main = Instance.new("Frame", ScreenGui)
+    Main.Size = UDim2.new(0, 500, 0, 300)
+    Main.Position = UDim2.new(0.5, -250, 0.5, -150)
+    Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Main.BorderSizePixel = 0
+    Main.Active = true
+    Main.Draggable = true
+
+    local Title = Instance.new("TextLabel", Main)
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Title.Text = title or "Simple UI"
+    Title.TextSize = 18
+    Title.TextColor3 = Color3.new(1, 1, 1)
+    Title.Font = Enum.Font.GothamBold
+    Title.BorderSizePixel = 0
+
+    local TabHolder = Instance.new("Frame", Main)
+    TabHolder.Size = UDim2.new(0, 100, 1, -40)
+    TabHolder.Position = UDim2.new(0, 0, 0, 40)
+    TabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TabHolder.BorderSizePixel = 0
+
+    local TabButtons = Instance.new("Frame", TabHolder)
+    TabButtons.Size = UDim2.new(1, 0, 1, 0)
+    TabButtons.BackgroundTransparency = 1
+
+    local UIListLayout = Instance.new("UIListLayout", TabButtons)
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local Tabs = {}
+
+    function SimpleUILib:CreateTab(tabName)
+        local TabBtn = Instance.new("TextButton", TabButtons)
+        TabBtn.Size = UDim2.new(1, 0, 0, 30)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        TabBtn.Text = tabName
+        TabBtn.TextColor3 = Color3.new(1, 1, 1)
+        TabBtn.Font = Enum.Font.Gotham
+        TabBtn.TextSize = 14
+        TabBtn.BorderSizePixel = 0
+
+        local TabContent = Instance.new("ScrollingFrame", Main)
+        TabContent.Size = UDim2.new(1, -100, 1, -40)
+        TabContent.Position = UDim2.new(0, 100, 0, 40)
+        TabContent.Visible = false
+        TabContent.CanvasSize = UDim2.new(0, 0, 5, 0)
+        TabContent.ScrollBarThickness = 5
+        TabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        TabContent.BorderSizePixel = 0
+
+        local Layout = Instance.new("UIListLayout", TabContent)
+        Layout.Padding = UDim.new(0, 5)
+
+        TabBtn.MouseButton1Click:Connect(function()
+            for _, v in pairs(Tabs) do
+                v.TabContent.Visible = false
+            end
+            TabContent.Visible = true
+        end)
+
+        local tabObj = {}
+
+        function tabObj:AddButton(text, callback)
+            local Button = Instance.new("TextButton", TabContent)
+            Button.Size = UDim2.new(1, -10, 0, 30)
+            Button.Text = text
+            Button.TextColor3 = Color3.new(1, 1, 1)
+            Button.Font = Enum.Font.Gotham
+            Button.TextSize = 14
+            Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            Button.BorderSizePixel = 0
+
+            Button.MouseButton1Click:Connect(callback)
+        end
+
+        function tabObj:AddToggle(text, callback)
+            local Toggle = Instance.new("TextButton", TabContent)
+            Toggle.Size = UDim2.new(1, -10, 0, 30)
+            Toggle.Text = text .. ": OFF"
+            Toggle.TextColor3 = Color3.new(1, 1, 1)
+            Toggle.Font = Enum.Font.Gotham
+            Toggle.TextSize = 14
+            Toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            Toggle.BorderSizePixel = 0
+
+            local toggled = false
+
+            Toggle.MouseButton1Click:Connect(function()
+                toggled = not toggled
+                Toggle.Text = text .. ": " .. (toggled and "ON" or "OFF")
+                if callback then callback(toggled) end
+            end)
+        end
+
+        Tabs[tabName] = {
+            TabContent = TabContent,
+            TabButton = TabBtn,
+        }
+
+        return tabObj
+    end
+
+    return SimpleUILib
+end
+
+return SimpleUILib
