@@ -122,7 +122,7 @@ function SmoothUILib:CreateWindow(title)
 
             local Tick = Instance.new("TextLabel", Box)
             Tick.Size = UDim2.new(1, 0, 1, 0)
-            Tick.Text = "✔"
+            Tick.Text = "✅"
             Tick.TextColor3 = Color3.fromRGB(0, 255, 0)
             Tick.TextScaled = true
             Tick.BackgroundTransparency = 1
