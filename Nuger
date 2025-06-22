@@ -1,17 +1,4 @@
---[[
-  SmoothUI Library v2
-  Features:
-  - Smooth rounded corners + black shadow
-  - Draggable window
-  - Centered tab buttons with spacing
-  - Slider with value display and dragging
-  - Dropdown with search
-  - Tickbox toggles (right side, green check with fade)
-  - Notification system
-  - Config save/load (using Roblox DataStore or local file simulation)
-  - UI toggle keybind (RightControl)
-  - Title bar with roblox profile picture button that opens sliding Profile tab on right side showing your profile info fetched from Roblox API
---]]
+-- SmoothUI Library v3 (Full Feature & Stable)
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -26,7 +13,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         Header = Color3.fromRGB(40, 40, 45),
         TabBG = Color3.fromRGB(30, 30, 35),
         Font = Enum.Font.SourceSansSemibold,
-        ShadowColor = Color3.new(0,0,0),
+        ShadowColor = Color3.new(0, 0, 0),
     }
 
     local Gui = Instance.new("ScreenGui")
@@ -34,7 +21,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     Gui.ResetOnSpawn = false
     Gui.Parent = game.CoreGui
 
-    -- Main Window Frame
+    -- Main window
     local Main = Instance.new("Frame", Gui)
     Main.Size = UDim2.new(0, 580, 0, 380)
     Main.Position = UDim2.new(0.5, -290, 0.5, -190)
@@ -45,9 +32,8 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     local MainUICorner = Instance.new("UICorner", Main)
     MainUICorner.CornerRadius = UDim.new(0, 10)
 
-    -- Black shadow (ImageLabel)
     local Shadow = Instance.new("ImageLabel", Main)
-    Shadow.Image = "rbxassetid://1316045217" -- Shadow image asset
+    Shadow.Image = "rbxassetid://1316045217"
     Shadow.Size = UDim2.new(1, 60, 1, 60)
     Shadow.Position = UDim2.new(0, -30, 0, -30)
     Shadow.BackgroundTransparency = 1
@@ -60,8 +46,8 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     Title.Size = UDim2.new(1, 0, 0, 40)
     Title.BackgroundColor3 = Settings.Header
     Title.BorderSizePixel = 0
-    local TitleUICorner = Instance.new("UICorner", Title)
-    TitleUICorner.CornerRadius = UDim.new(0, 10)
+    local TitleCorner = Instance.new("UICorner", Title)
+    TitleCorner.CornerRadius = UDim.new(0, 10)
 
     local TitleLabel = Instance.new("TextLabel", Title)
     TitleLabel.Size = UDim2.new(1, -60, 1, 0)
@@ -74,17 +60,16 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
     TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-    -- Profile Button with Roblox Avatar
     local ProfileBtn = Instance.new("ImageButton", Title)
     ProfileBtn.Size = UDim2.new(0, 32, 0, 32)
     ProfileBtn.Position = UDim2.new(1, -42, 0.5, -16)
     ProfileBtn.BackgroundTransparency = 1
-    ProfileBtn.Image = "rbxthumb://type=AvatarHeadShot&id=".. tostring(robloxUserId) .."&w=48&h=48"
+    ProfileBtn.Image = "rbxthumb://type=AvatarHeadShot&id=" .. tostring(robloxUserId) .. "&w=48&h=48"
     ProfileBtn.AutoButtonColor = true
     ProfileBtn.Name = "ProfileButton"
     ProfileBtn.ZIndex = 2
 
-    -- TabBar on left
+    -- Tab bar (left side)
     local TabBar = Instance.new("Frame", Main)
     TabBar.Size = UDim2.new(0, 120, 1, -40)
     TabBar.Position = UDim2.new(0, 0, 0, 40)
@@ -93,7 +78,6 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     local TabBarCorner = Instance.new("UICorner", TabBar)
     TabBarCorner.CornerRadius = UDim.new(0, 8)
 
-    -- Center tabs vertically
     local TabHolder = Instance.new("Frame", TabBar)
     TabHolder.Size = UDim2.new(1, 0, 1, 0)
     TabHolder.BackgroundTransparency = 1
@@ -103,16 +87,13 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     TabLayout.Padding = UDim.new(0, 12)
     TabLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 
-    local Tabs = {}
-    local CurrentConfig = {}
-
-    -- Content Holder
+    -- Content Holder (right of tab bar)
     local ContentHolder = Instance.new("Frame", Main)
     ContentHolder.Size = UDim2.new(1, -130, 1, -50)
     ContentHolder.Position = UDim2.new(0, 125, 0, 45)
     ContentHolder.BackgroundTransparency = 1
 
-    -- Sliding Profile Tab
+    -- Profile Tab (sliding panel)
     local ProfileTab = Instance.new("Frame", Main)
     ProfileTab.Size = UDim2.new(0, 240, 1, -50)
     ProfileTab.Position = UDim2.new(1, 10, 0, 45)
@@ -122,7 +103,6 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     ProfileUICorner.CornerRadius = UDim.new(0, 8)
     ProfileTab.Visible = false
 
-    -- ProfileTab content: Simple example info
     local ProfileTitle = Instance.new("TextLabel", ProfileTab)
     ProfileTitle.Size = UDim2.new(1, 0, 0, 30)
     ProfileTitle.Position = UDim2.new(0, 0, 0, 10)
@@ -130,7 +110,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     ProfileTitle.Text = "Roblox Profile"
     ProfileTitle.Font = Settings.Font
     ProfileTitle.TextSize = 18
-    ProfileTitle.TextColor3 = Color3.new(1,1,1)
+    ProfileTitle.TextColor3 = Color3.new(1, 1, 1)
     ProfileTitle.TextXAlignment = Enum.TextXAlignment.Center
 
     local ProfileNameLabel = Instance.new("TextLabel", ProfileTab)
@@ -140,7 +120,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     ProfileNameLabel.Text = "Loading..."
     ProfileNameLabel.Font = Settings.Font
     ProfileNameLabel.TextSize = 16
-    ProfileNameLabel.TextColor3 = Color3.new(1,1,1)
+    ProfileNameLabel.TextColor3 = Color3.new(1, 1, 1)
     ProfileNameLabel.TextXAlignment = Enum.TextXAlignment.Left
 
     local ProfileDescLabel = Instance.new("TextLabel", ProfileTab)
@@ -150,31 +130,12 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
     ProfileDescLabel.Text = ""
     ProfileDescLabel.Font = Settings.Font
     ProfileDescLabel.TextSize = 14
-    ProfileDescLabel.TextColor3 = Color3.new(0.8,0.8,0.8)
+    ProfileDescLabel.TextColor3 = Color3.new(0.8, 0.8, 0.8)
     ProfileDescLabel.TextWrapped = true
     ProfileDescLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Function to fetch profile info from Roblox API
-    local function FetchProfile()
-        task.spawn(function()
-            local success, data = pcall(function()
-                local url = ("https://users.roblox.com/v1/users/%d"):format(robloxUserId)
-                local res = game:HttpGet(url)
-                return HttpService:JSONDecode(res)
-            end)
-            if success and data then
-                ProfileNameLabel.Text = "Username: "..(data.name or "N/A")
-                ProfileDescLabel.Text = "Display Name: "..(data.displayName or "N/A")
-            else
-                ProfileNameLabel.Text = "Error loading profile."
-            end
-        end)
-    end
-
-    FetchProfile()
-
-    -- Slide ProfileTab function
-    local function ShowProfileTab(show)
+    local profileOpen = false
+    local function SlideProfile(show)
         if show then
             ProfileTab.Visible = true
             TweenService:Create(ProfileTab, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
@@ -190,13 +151,85 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         end
     end
 
-    local profileOpen = false
     ProfileBtn.MouseButton1Click:Connect(function()
         profileOpen = not profileOpen
-        ShowProfileTab(profileOpen)
+        SlideProfile(profileOpen)
     end)
 
-    -- Tabs API
+    local function FetchProfile()
+        task.spawn(function()
+            local success, data = pcall(function()
+                local url = ("https://users.roblox.com/v1/users/%d"):format(robloxUserId)
+                local res = game:HttpGet(url)
+                return HttpService:JSONDecode(res)
+            end)
+            if success and data then
+                ProfileNameLabel.Text = "Username: " .. (data.name or "N/A")
+                ProfileDescLabel.Text = "Display Name: " .. (data.displayName or "N/A")
+            else
+                ProfileNameLabel.Text = "Error loading profile."
+                ProfileDescLabel.Text = ""
+            end
+        end)
+    end
+
+    FetchProfile()
+
+    -- Tabs container
+    local Tabs = {}
+
+    -- Save config data locally
+    local Config = {}
+
+    local function saveConfig(name)
+        local data = {}
+        for tabName, tab in pairs(Tabs) do
+            local content = tab.Content
+            for _, frame in pairs(content:GetChildren()) do
+                if frame:IsA("Frame") then
+                    local label = frame:FindFirstChildWhichIsA("TextLabel")
+                    if label then
+                        local toggleBtn = frame:FindFirstChildWhichIsA("TextButton")
+                        if toggleBtn then
+                            local tick = toggleBtn:FindFirstChildWhichIsA("TextLabel")
+                            if tick then
+                                data[label.Text] = tick.TextTransparency == 0
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        Config[name] = data
+        print("Config saved:", HttpService:JSONEncode(data))
+    end
+
+    local function loadConfig(name)
+        local data = Config[name]
+        if not data then return end
+        for tabName, tab in pairs(Tabs) do
+            local content = tab.Content
+            for _, frame in pairs(content:GetChildren()) do
+                if frame:IsA("Frame") then
+                    local label = frame:FindFirstChildWhichIsA("TextLabel")
+                    if label then
+                        local toggleBtn = frame:FindFirstChildWhichIsA("TextButton")
+                        if toggleBtn then
+                            local tick = toggleBtn:FindFirstChildWhichIsA("TextLabel")
+                            if tick then
+                                local val = data[label.Text]
+                                if val ~= nil then
+                                    tick.TextTransparency = val and 0 or 1
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Create tabs API
     function SmoothUILib:CreateTab(name)
         local Btn = Instance.new("TextButton", TabHolder)
         Btn.Size = UDim2.new(1, -20, 0, 32)
@@ -228,56 +261,40 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         Btn.MouseButton1Click:Connect(function()
             for _, v in pairs(Tabs) do
                 v.Content.Visible = false
+                v.TabButton.BackgroundColor3 = Settings.TabBG
+                v.TabButton.TextColor3 = Color3.new(1,1,1)
             end
             Content.Visible = true
-            -- Close profile if open
-            if profileOpen then
-                profileOpen = false
-                ShowProfileTab(false)
-            end
+            Btn.BackgroundColor3 = Settings.AccentColor
+            Btn.TextColor3 = Color3.new(1,1,1)
         end)
 
         local API = {}
 
-        -- Add Button
-        function API:AddButton(txt, callback)
-            local B = Instance.new("TextButton", Content)
-            B.Size = UDim2.new(1, -20, 0, 32)
-            B.Text = txt
-            B.Font = Settings.Font
-            B.TextSize = 14
-            B.TextColor3 = Color3.new(1, 1, 1)
-            B.BackgroundColor3 = Settings.AccentColor
-            B.BorderSizePixel = 0
-            local BCorner = Instance.new("UICorner", B)
-            BCorner.CornerRadius = UDim.new(0, 6)
-            B.MouseButton1Click:Connect(callback)
-        end
-
-        -- Add Toggle with tick on right
+        -- Add Toggle
         function API:AddToggle(txt, default, callback)
             local Hold = Instance.new("Frame", Content)
-            Hold.Size = UDim2.new(1, -20, 0, 32)
+            Hold.Size = UDim2.new(1, -20, 0, 36)
             Hold.BackgroundTransparency = 1
 
             local Label = Instance.new("TextLabel", Hold)
-            Label.Size = UDim2.new(1, -50, 1, 0)
-            Label.Position = UDim2.new(0, 0, 0, 0)
+            Label.Size = UDim2.new(1, -40, 1, 0)
+            Label.Position = UDim2.new(0, 4, 0, 0)
             Label.Text = txt
             Label.TextColor3 = Color3.new(1, 1, 1)
             Label.BackgroundTransparency = 1
             Label.TextXAlignment = Enum.TextXAlignment.Left
             Label.Font = Settings.Font
-            Label.TextSize = 14
+            Label.TextSize = 16
 
             local Box = Instance.new("TextButton", Hold)
-            Box.Size = UDim2.new(0, 32, 0, 32)
-            Box.Position = UDim2.new(1, -32, 0, 0)
+            Box.Size = UDim2.new(0, 28, 0, 28)
+            Box.Position = UDim2.new(1, -32, 0.5, -14)
             Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Box.Text = ""
             Box.AutoButtonColor = false
+            Box.BorderSizePixel = 0
             local BoxCorner = Instance.new("UICorner", Box)
-            BoxCorner.CornerRadius = UDim.new(0, 6)
+            BoxCorner.CornerRadius = UDim.new(0, 5)
 
             local Tick = Instance.new("TextLabel", Box)
             Tick.Size = UDim2.new(1, 0, 1, 0)
@@ -303,7 +320,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         -- Add Slider
         function API:AddSlider(txt, min, max, default, callback)
             local Hold = Instance.new("Frame", Content)
-            Hold.Size = UDim2.new(1, -20, 0, 40)
+            Hold.Size = UDim2.new(1, -20, 0, 50)
             Hold.BackgroundTransparency = 1
 
             local Label = Instance.new("TextLabel", Hold)
@@ -377,7 +394,7 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         -- Add Dropdown
         function API:AddDropdown(txt, options, default, callback)
             local Hold = Instance.new("Frame", Content)
-            Hold.Size = UDim2.new(1, -20, 0, 40)
+            Hold.Size = UDim2.new(1, -20, 0, 50)
             Hold.BackgroundTransparency = 1
 
             local Label = Instance.new("TextLabel", Hold)
@@ -471,43 +488,26 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
             end
         end
 
-        -- Add Notification
-        function API:Notify(text, duration)
-            duration = duration or 3
-            local notif = Instance.new("Frame", Gui)
-            notif.Size = UDim2.new(0, 250, 0, 40)
-            notif.Position = UDim2.new(0.5, -125, 0, 30)
-            notif.BackgroundColor3 = Settings.AccentColor
-            notif.BorderSizePixel = 0
-            notif.ZIndex = 1000
-            local notifCorner = Instance.new("UICorner", notif)
-            notifCorner.CornerRadius = UDim.new(0, 8)
+        -- Add Button
+        function API:AddButton(txt, callback)
+            local Hold = Instance.new("Frame", Content)
+            Hold.Size = UDim2.new(1, -20, 0, 38)
+            Hold.BackgroundTransparency = 1
 
-            local notifText = Instance.new("TextLabel", notif)
-            notifText.Size = UDim2.new(1, -20, 1, 0)
-            notifText.Position = UDim2.new(0, 10, 0, 0)
-            notifText.BackgroundTransparency = 1
-            notifText.Text = text
-            notifText.TextColor3 = Color3.new(1,1,1)
-            notifText.Font = Settings.Font
-            notifText.TextSize = 16
-            notifText.TextWrapped = true
+            local Btn = Instance.new("TextButton", Hold)
+            Btn.Size = UDim2.new(1, 0, 1, 0)
+            Btn.Position = UDim2.new(0, 0, 0, 0)
+            Btn.BackgroundColor3 = Settings.AccentColor
+            Btn.BorderSizePixel = 0
+            Btn.Text = txt
+            Btn.TextColor3 = Color3.new(1, 1, 1)
+            Btn.Font = Settings.Font
+            Btn.TextSize = 16
+            local BtnCorner = Instance.new("UICorner", Btn)
+            BtnCorner.CornerRadius = UDim.new(0, 7)
 
-            notif.AnchorPoint = Vector2.new(0.5, 0)
-            notif.Position = UDim2.new(0.5, 0, 0, -50)
-
-            -- Tween in
-            TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                Position = UDim2.new(0.5, 0, 0, 30)
-            }):Play()
-
-            task.delay(duration, function()
-                TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-                    Position = UDim2.new(0.5, 0, 0, -50)
-                }):Play()
-                task.delay(0.5, function()
-                    notif:Destroy()
-                end)
+            Btn.MouseButton1Click:Connect(function()
+                if callback then callback() end
             end)
         end
 
@@ -515,14 +515,17 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         return API
     end
 
-    -- Show first tab automatically
+    -- Show first tab by default
     task.defer(function()
         for _, v in pairs(Tabs) do
             v.Content.Visible = false
+            v.TabButton.BackgroundColor3 = Settings.TabBG
+            v.TabButton.TextColor3 = Color3.new(1, 1, 1)
         end
         local firstTab = next(Tabs)
         if firstTab then
             Tabs[firstTab].Content.Visible = true
+            Tabs[firstTab].TabButton.BackgroundColor3 = Settings.AccentColor
         end
     end)
 
@@ -535,54 +538,12 @@ function SmoothUILib:CreateWindow(title, robloxUserId)
         end
     end)
 
-    -- Config save/load
-    local Config = {}
+    -- Expose config functions
     function SmoothUILib:SaveConfig(name)
-        Config[name] = {}
-        for tabName, tabData in pairs(Tabs) do
-            local content = tabData.Content
-            for _, child in pairs(content:GetChildren()) do
-                if child:IsA("Frame") then
-                    local label = child:FindFirstChildOfClass("TextLabel")
-                    if label then
-                        local toggle = child:FindFirstChildOfClass("TextButton")
-                        if toggle and toggle:FindFirstChildWhichIsA("TextLabel") then
-                            -- Toggle value
-                            local tick = toggle:FindFirstChildWhichIsA("TextLabel")
-                            Config[name][label.Text] = (tick.TextTransparency == 0)
-                        elseif child:FindFirstChildOfClass("Frame") then
-                            -- Slider or Dropdown -- You can expand this section for saving sliders/dropdowns
-                        end
-                    end
-                end
-            end
-        end
-        -- Save Config (you can customize this to DataStore or file saving)
-        print("Config saved:", HttpService:JSONEncode(Config[name]))
-        return Config[name]
+        saveConfig(name)
     end
-
     function SmoothUILib:LoadConfig(name)
-        local saved = Config[name]
-        if not saved then return end
-        for tabName, tabData in pairs(Tabs) do
-            local content = tabData.Content
-            for _, child in pairs(content:GetChildren()) do
-                if child:IsA("Frame") then
-                    local label = child:FindFirstChildOfClass("TextLabel")
-                    if label then
-                        local toggle = child:FindFirstChildOfClass("TextButton")
-                        if toggle and toggle:FindFirstChildWhichIsA("TextLabel") then
-                            local tick = toggle:FindFirstChildWhichIsA("TextLabel")
-                            local val = saved[label.Text]
-                            if val ~= nil then
-                                tick.TextTransparency = val and 0 or 1
-                            end
-                        end
-                    end
-                end
-            end
-        end
+        loadConfig(name)
     end
 
     return SmoothUILib
