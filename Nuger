@@ -1,33 +1,45 @@
--- SimpleUILib.lua
-local SimpleUILib = {}
+-- SmoothUILib.lua
+local TweenService = game:GetService("TweenService")
 
--- Create the base UI
-function SimpleUILib:CreateWindow(title)
+local SmoothUILib = {}
+
+function SmoothUILib:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-    ScreenGui.Name = "SimpleUI_" .. tostring(math.random(1, 10000))
+    ScreenGui.Name = "SmoothUI_" .. tostring(math.random(1, 10000))
     ScreenGui.ResetOnSpawn = false
 
     local Main = Instance.new("Frame", ScreenGui)
-    Main.Size = UDim2.new(0, 500, 0, 300)
-    Main.Position = UDim2.new(0.5, -250, 0.5, -150)
-    Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Main.Size = UDim2.new(0, 520, 0, 340)
+    Main.Position = UDim2.new(0.5, -260, 0.5, -170)
+    Main.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     Main.BorderSizePixel = 0
     Main.Active = true
     Main.Draggable = true
 
+    local UICorner = Instance.new("UICorner", Main)
+    UICorner.CornerRadius = UDim.new(0, 8)
+
+    local Shadow = Instance.new("ImageLabel", Main)
+    Shadow.Size = UDim2.new(1, 30, 1, 30)
+    Shadow.Position = UDim2.new(0, -15, 0, -15)
+    Shadow.Image = "rbxassetid://1316045217"
+    Shadow.ImageTransparency = 0.5
+    Shadow.BackgroundTransparency = 1
+    Shadow.ZIndex = -1
+
     local Title = Instance.new("TextLabel", Main)
     Title.Size = UDim2.new(1, 0, 0, 40)
-    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Title.Text = title or "Simple UI"
-    Title.TextSize = 18
-    Title.TextColor3 = Color3.new(1, 1, 1)
+    Title.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    Title.Text = title or "Smooth UI"
+    Title.TextSize = 20
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Font = Enum.Font.GothamBold
     Title.BorderSizePixel = 0
 
     local TabHolder = Instance.new("Frame", Main)
-    TabHolder.Size = UDim2.new(0, 100, 1, -40)
+    TabHolder.Size = UDim2.new(0, 110, 1, -40)
     TabHolder.Position = UDim2.new(0, 0, 0, 40)
-    TabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TabHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     TabHolder.BorderSizePixel = 0
 
     local TabButtons = Instance.new("Frame", TabHolder)
@@ -36,68 +48,90 @@ function SimpleUILib:CreateWindow(title)
 
     local UIListLayout = Instance.new("UIListLayout", TabButtons)
     UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 5)
 
     local Tabs = {}
 
-    function SimpleUILib:CreateTab(tabName)
+    function SmoothUILib:CreateTab(tabName)
         local TabBtn = Instance.new("TextButton", TabButtons)
-        TabBtn.Size = UDim2.new(1, 0, 0, 30)
-        TabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        TabBtn.Size = UDim2.new(1, -10, 0, 30)
+        TabBtn.Position = UDim2.new(0, 5, 0, 0)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
         TabBtn.Text = tabName
-        TabBtn.TextColor3 = Color3.new(1, 1, 1)
+        TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabBtn.Font = Enum.Font.Gotham
         TabBtn.TextSize = 14
         TabBtn.BorderSizePixel = 0
 
+        local UICorner = Instance.new("UICorner", TabBtn)
+        UICorner.CornerRadius = UDim.new(0, 6)
+
         local TabContent = Instance.new("ScrollingFrame", Main)
-        TabContent.Size = UDim2.new(1, -100, 1, -40)
-        TabContent.Position = UDim2.new(0, 100, 0, 40)
+        TabContent.Size = UDim2.new(1, -120, 1, -50)
+        TabContent.Position = UDim2.new(0, 115, 0, 45)
+        TabContent.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
         TabContent.Visible = false
         TabContent.CanvasSize = UDim2.new(0, 0, 5, 0)
-        TabContent.ScrollBarThickness = 5
-        TabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        TabContent.ScrollBarThickness = 4
         TabContent.BorderSizePixel = 0
 
+        local UICorner2 = Instance.new("UICorner", TabContent)
+        UICorner2.CornerRadius = UDim.new(0, 6)
+
         local Layout = Instance.new("UIListLayout", TabContent)
-        Layout.Padding = UDim.new(0, 5)
+        Layout.Padding = UDim.new(0, 8)
+        Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
         TabBtn.MouseButton1Click:Connect(function()
             for _, v in pairs(Tabs) do
                 v.TabContent.Visible = false
+                TweenService:Create(v.TabButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
             end
             TabContent.Visible = true
+            TweenService:Create(TabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(80, 80, 100)}):Play()
         end)
 
         local tabObj = {}
 
         function tabObj:AddButton(text, callback)
             local Button = Instance.new("TextButton", TabContent)
-            Button.Size = UDim2.new(1, -10, 0, 30)
+            Button.Size = UDim2.new(1, -10, 0, 32)
             Button.Text = text
             Button.TextColor3 = Color3.new(1, 1, 1)
             Button.Font = Enum.Font.Gotham
             Button.TextSize = 14
-            Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            Button.BackgroundColor3 = Color3.fromRGB(50, 90, 120)
             Button.BorderSizePixel = 0
+            Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 5)
+
+            Button.MouseEnter:Connect(function()
+                TweenService:Create(Button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 110, 140)}):Play()
+            end)
+            Button.MouseLeave:Connect(function()
+                TweenService:Create(Button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 90, 120)}):Play()
+            end)
 
             Button.MouseButton1Click:Connect(callback)
         end
 
         function tabObj:AddToggle(text, callback)
             local Toggle = Instance.new("TextButton", TabContent)
-            Toggle.Size = UDim2.new(1, -10, 0, 30)
+            Toggle.Size = UDim2.new(1, -10, 0, 32)
             Toggle.Text = text .. ": OFF"
             Toggle.TextColor3 = Color3.new(1, 1, 1)
             Toggle.Font = Enum.Font.Gotham
             Toggle.TextSize = 14
-            Toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            Toggle.BackgroundColor3 = Color3.fromRGB(90, 40, 40)
             Toggle.BorderSizePixel = 0
+            Instance.new("UICorner", Toggle).CornerRadius = UDim.new(0, 5)
 
             local toggled = false
 
             Toggle.MouseButton1Click:Connect(function()
                 toggled = not toggled
                 Toggle.Text = text .. ": " .. (toggled and "ON" or "OFF")
+                local color = toggled and Color3.fromRGB(40, 90, 40) or Color3.fromRGB(90, 40, 40)
+                TweenService:Create(Toggle, TweenInfo.new(0.2), {BackgroundColor3 = color}):Play()
                 if callback then callback(toggled) end
             end)
         end
@@ -110,7 +144,7 @@ function SimpleUILib:CreateWindow(title)
         return tabObj
     end
 
-    return SimpleUILib
+    return SmoothUILib
 end
 
-return SimpleUILib
+return SmoothUILib
